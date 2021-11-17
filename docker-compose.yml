@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  mongo-database:
+    image: mongo:latest
+    restart: always
+    container_name: mongo-database
+    ports:
+      - '28017:27017'
+    networks:
+      - 'config-network'
+    environment:
+      MONGO_INITDB_DATABASE: root-db
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  config-service:
+    image: config-service
+    restart: always
+    container_name: config-service
+    ports:
+      - '8888:8888'
+    networks:
+      - 'config-network'
+networks:
+  config-network:
+    name: config-network
+    driver: bridge
